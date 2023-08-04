@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model course {
+  id            BigInt    @id @default(autoincrement())
+  created_at    DateTime? @default(now()) @db.Timestamptz(6)
+  name          String?   @db.VarChar
+  streetAddress String?   @db.VarChar
+  city          String?   @db.VarChar
+  state         String?   @db.VarChar
+  zip           BigInt?
+  club          club[]
+}
+
+model customer {
+  id         BigInt    @id @default(autoincrement())
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  firstName  String?   @db.VarChar
+  lastName   String?   @db.VarChar
+  rental     rental[]
+}
+
+model club {
+  id         BigInt    @id @default(autoincrement())
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  courseId   BigInt?
+  make       String?   @db.VarChar
+  model      String?   @db.VarChar
+  price      Decimal?  @db.Decimal
+  category   String?   @db.VarChar
+  course     course?   @relation(fields: [courseId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  rental     rental[]
+}
+
+model rental {
+  id           BigInt    @id @default(autoincrement())
+  created_at   DateTime? @default(now()) @db.Timestamptz(6)
+  customerId   BigInt?
+  checkoutTime DateTime? @default(now()) @db.Timestamptz(6)
+  returnTime   DateTime? @db.Timestamptz(6)
+  clubId       BigInt?
+  club         club?     @relation(fields: [clubId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  customer     customer? @relation(fields: [customerId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}

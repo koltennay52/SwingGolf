@@ -1,0 +1,3 @@
+npx prisma db pull: updates any changes made from supabase db gui 
+
+npx prisma generate: generate prisma client based on what is currently in the schema
