@@ -1,7 +1,8 @@
 
 import express from "express";
 import { PrismaClient } from "@prisma/client";
-import { CourseRequest } from "../models/course";
+import { CourseRequest } from "../requestModels/course";
+import { Course } from "../models/course";
 
 const prisma = new PrismaClient();
 
@@ -14,10 +15,15 @@ courseRouter
       where: {
         id: 1,
       },
-    })
-    res.send(
-      course
-    );
+    });
+    
+    if (course != null) {
+      let courseResponse = new Course(course);
+      res.send(courseResponse);
+    }
+    else {
+      res.send("Unable to find course for given ID");
+    }
   })
   .post(async (req : CourseRequest, res) => {
     const course = await prisma.course.create({

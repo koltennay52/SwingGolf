@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const client_1 = require("@prisma/client");
+const course_1 = require("../models/course");
 const prisma = new client_1.PrismaClient();
 const courseRouter = express_1.default.Router();
 courseRouter
@@ -24,7 +25,13 @@ courseRouter
             id: 1,
         },
     });
-    res.send(course);
+    if (course != null) {
+        let courseResponse = new course_1.Course(course);
+        res.send(courseResponse);
+    }
+    else {
+        res.send("Unable to find course for given ID");
+    }
 }))
     .post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const course = yield prisma.course.create({
