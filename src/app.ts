@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 
-app.use("/", courseRouter);
+app.use("/course", courseRouter);
 
 app.get("/", (req, res) => {
     res.send("PING SWING GOLF");

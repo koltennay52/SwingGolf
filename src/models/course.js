@@ -4,6 +4,7 @@ exports.Course = void 0;
 class Course {
     constructor(course) {
         var _a, _b;
+        this.id = course.id.toString();
         this.name = course.name;
         this.streetAddress = course.streetAddress;
         this.city = course.city;

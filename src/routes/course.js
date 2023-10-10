@@ -18,31 +18,58 @@ const course_1 = require("../models/course");
 const prisma = new client_1.PrismaClient();
 const courseRouter = express_1.default.Router();
 courseRouter
-    .route("/course")
-    .get((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const course = yield prisma.course.findUnique({
-        where: {
-            id: 1,
-        },
-    });
-    if (course != null) {
-        let courseResponse = new course_1.Course(course);
-        res.send(courseResponse);
-    }
-    else {
-        res.send("Unable to find course for given ID");
-    }
-}))
-    .post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const course = yield prisma.course.create({
-        data: {
-            name: req.name,
-            streetAddress: req.streetAddress,
-            city: req.city,
-            state: req.state,
-            zip: req.zip
+    .get('/:courseId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const course = yield prisma.course.findUnique({
+            where: {
+                id: parseInt(req.params.courseId),
+            },
+        });
+        if (course != null) {
+            res.send(new course_1.Course(course));
         }
-    });
-    res.send(course);
+        else {
+            res.send("Unable to find course for given ID. Please check ID and try again.");
+        }
+    }
+    catch (error) {
+        console.error('Error retrieving course:', error);
+        res.send('Error retrieving course.');
+    }
+}));
+courseRouter
+    .post('', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const course = yield prisma.course.create({
+            data: {
+                name: req.body.name,
+                streetAddress: req.body.streetAddress,
+                city: req.body.city,
+                state: req.body.state,
+                zip: req.body.zip
+            }
+        });
+        res.send(new course_1.Course(course));
+    }
+    catch (error) {
+        console.error('Error adding course:', error);
+        res.send('Error adding course.');
+    }
+}));
+courseRouter
+    .delete('/:courseId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const deletedCourse = yield prisma.course.delete({
+            where: {
+                id: parseInt(req.params.courseId),
+            },
+        });
+        console.log('Deleted course:', deletedCourse);
+        res.send('Successfully deleted course');
+    }
+    catch (error) {
+        console.error('Error deleting course:', error);
+        res.send('Error deleting course.');
+    }
 }));
 exports.default = courseRouter;
